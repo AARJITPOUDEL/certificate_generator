@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component, createRef } from "react";
+import { exportComponentAsPNG } from "react-component-export-image";
+import './App.css'
+import certificate from './certificate.png'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  certificateWrapper = createRef();
+  state = {
+    Name: ""
+  };
+
+  render() {  
+    const handleNameChange = (e) => {
+      this.setState({ Name: e.target.value });
+    }
+
+    const handleDownload = (e) => {
+      e.preventDefault();
+      exportComponentAsPNG(this.certificateWrapper.current, {
+        html2CanvasOptions: { backgroundColor: null }
+      });
+    }
+
+    return (
+      <div className="App">
+        <div className="Meta">
+          <h1> Certificate Generator</h1>
+          <p>Please enter your name.</p>
+          <input
+            type="text"
+            placeholder="Please enter your name..."
+            value={this.state.Name}
+            onChange={handleNameChange}
+          />
+          <button onClick={handleDownload}>Download</button>
+        </div>
+
+        <div id="downloadWrapper" ref={this.certificateWrapper}>
+          <div id="certificateWrapper">
+            <p>{this.state.Name}</p>
+            <img src={certificate} width={600} height={700} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
